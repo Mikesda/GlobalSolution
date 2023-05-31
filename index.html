@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciado de gastos</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+ 
+<body>
+    <main class="conteudo">
+        <header>
+            <div class="principal">
+                <img src= "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z2xhc3MlMjBvZiUyMHdhdGVyfGVufDB8fDB8fHww&w=1000&q=80" alt="logo"  class="image">
+                <form action="" class="adicionar" id="novoItem">
+                    <label for="text">Nome da conta</label>
+                    <input type="text" name="nome" id="nome">
+                    <label for="valor">Valor da conta</label>
+                    <input type="float" name="valor" id="valor">
+                    <input type="submit" value="Adicionar" class="cadastrar" id="cadastrar">
+                    <input type="text" name="filtro" id="filtro" placeholder="Pesquisar por nome ou valor">
+                </form>
+            </div>
+            <button class="bAnalise" id="btnAnalise">Análise de Consumo</button>
+            
+            <div>
+                <ul class="lista" id="lista"></ul>
+            </div>
+        </header>
+        <ul class="analiseSection" id="analiseSection" style="display: none;">
+            <h2>Análise de consumo</h2>
+                <div 
+                    id="totalGasto">
+                </div>
+                <div 
+                    id="analiseConsumo">
+                </div>
+        </ul>
+        
+
+        
+    </main>
+
+    <script src="js/main.js"></script>
+</body>
+
+</html>
