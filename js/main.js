@@ -7,72 +7,91 @@ itens.forEach( (elemento) => {
 } )
 
 form.addEventListener("submit", (evento) => {
-    evento.preventDefault()
+    evento.preventDefault();
 
-    const nome = evento.target.elements['nome']
-    const valor = evento.target.elements['valor']
+    const nome = evento.target.elements['nome'];
+    const valor = evento.target.elements['valor'];
 
-    const valorFormatado =  valor.value.replace(",", ".");
-    const existe = itens.find( elemento => elemento.nome === nome.value )
+    const valorFormatado = valor.value.replace(",", ".");
+    const existe = itens.find((elemento) => elemento.nome === nome.value);
 
-    const itemAtual = {
-        "nome": nome.value,
-        "valor": valorFormatado
-    }
+    if (nome.value && valor.value) {
+        if (nome.value.length > 20) {
+            // Se o nome da conta ultrapassar o limite de 20 caracteres, exibir uma mensagem de erro.
+            alert("O campo 'Nome' deve ter no máximo 20 caracteres.");
+            return;
+        }
 
-    if (existe) {
-        itemAtual.id = existe.id
-        
-        atualizaElemento(itemAtual)
+        // Verificar se o valor possui apenas números, "," e "."
+        const valorRegex = /^[\d.,]+$/;
+        if (!valorRegex.test(valor.value)) {
+            // Valor inválido, exiba uma mensagem de erro.
+            alert("O campo 'Valor' deve conter apenas números, ',' e '.'.");
+            return;
+        }
 
-        itens[itens.findIndex(elemento => elemento.id === existe.id)] = itemAtual
+        if (existe) {
+            // Nome de conta já existe, exiba uma mensagem de erro.
+            alert("Nome de conta já cadastrada.");
+        } else {
+            const itemAtual = {
+                nome: nome.value,
+                valor: valorFormatado
+            };
+
+            if (existe) {
+                itemAtual.id = existe.id;
+
+                atualizaElemento(itemAtual);
+
+                itens[itens.findIndex((elemento) => elemento.id === existe.id)] = itemAtual;
+            } else {
+                itemAtual.id = itens[itens.length - 1] ? itens[itens.length - 1].id + 1 : 0;
+
+                criaElemento(itemAtual);
+
+                itens.push(itemAtual);
+            }
+
+            localStorage.setItem("itens", JSON.stringify(itens));
+
+            nome.value = "";
+            valor.value = "";
+        }
     } else {
-        itemAtual.id = itens[itens.length -1] ? (itens[itens.length-1]).id + 1 : 0;
-
-        criaElemento(itemAtual)
-
-        itens.push(itemAtual)
+        // Campos nome e valor não estão preenchidos, exiba uma mensagem de erro.
+        alert("Por favor, preencha tanto o campo 'Nome' quanto o campo 'Valor'.");
     }
-
-    localStorage.setItem("itens", JSON.stringify(itens))
-
-    nome.value = ""
-    valor.value = ""
-})
+});
 
 function criaElemento(item) {
-    const novoItem = document.createElement("li")
-    novoItem.classList.add("item")
+    const novoItem = document.createElement("li");
+    novoItem.classList.add("item");
 
-    const numeroItem = document.createElement("strong")
-    // numeroItem.innerHTML = "R$" + item.valor.toLowerCase()
-    const valor = item.valor
-    const valorFormatado =  valor.replace(",", ".");
-    numeroItem.innerHTML = "R$" + valorFormatado
-    numeroItem.dataset.id = item.id
-    novoItem.appendChild(numeroItem)
-        
-    // novoItem.innerHTML += item.nome.toLowerCase()
-    novoItem.innerHTML += item.nome
+    const numeroItem = document.createElement("strong");
+    const valor = item.valor;
+    const valorFormatado = valor.replace(",", ".");
+    const valorFormatadoComDuasCasasDecimais = parseFloat(valorFormatado).toFixed(2);
+    numeroItem.innerHTML = "R$" + valorFormatadoComDuasCasasDecimais;
+    numeroItem.dataset.id = item.id;
+    novoItem.appendChild(numeroItem);
 
-    
+    novoItem.innerHTML += item.nome;
 
-    //Deleta o item criado
-    novoItem.appendChild(botaoDeleta(item.id))
+    // Deleta o item criado
+    novoItem.appendChild(botaoDeleta(item.id));
 
     // Adicione classes ao elemento <li> para filtragem
     if (item.nome) {
-        // novoItem.classList.add(item.nome.toLowerCase());
         novoItem.classList.add(item.nome.toLowerCase().replace(/\s+/g, '-'));
-
     }
     if (item.valor) {
-         novoItem.classList.add(valorFormatado.toLowerCase());
+        novoItem.classList.add(valorFormatado.toLowerCase());
     }
-    calcularTotalGasto(); // Atualiza o valor total
-    analisarConsumo(); // Atualiza a análise de consumo
-    lista.appendChild(novoItem)
+
+    lista.appendChild(novoItem);
 }
+
 
 function atualizaElemento(item) {
     document.querySelector("[data-id='"+item.id+"']").innerHTML = item.valor
@@ -80,11 +99,13 @@ function atualizaElemento(item) {
 
 function botaoDeleta(id) {
     const elementoBotao = document.createElement("button")
-    elementoBotao.innerText = "X"
+    elementoBotao.innerText = "X";
 
     elementoBotao.addEventListener("click", function() {
-        deletaElemento(this.parentNode, id)
-    })
+        if(confirm("Tem certeza que deseja excluir esta conta ?")){
+            deletaElemento(this.parentNode, id);
+        }
+    });
 
     return elementoBotao
 }
@@ -120,20 +141,68 @@ filtroInput.addEventListener("input", function () {
     });
 });
 
-//Análise de consumo
 const btnAnalise = document.getElementById("btnAnalise");
-btnAnalise.addEventListener("click", mostrarAnaliseConsumo);
+btnAnalise.addEventListener("click", toggleAnaliseConsumo);
 
-function mostrarAnaliseConsumo() {
-    const analiseSection = document.getElementById("analiseSection");
-    analiseSection.style.display = "block";
+function toggleAnaliseConsumo() {
+  const analiseSection = document.getElementById("analiseSection");
   
+  // Verifica o estado atual da seção de análise
+  if (analiseSection.style.display === "block") {
+    analiseSection.style.display = "none";
+    btnAnalise.textContent = "Mostrar Análise";
+  } else {
+    analiseSection.style.display = "block";
+    btnAnalise.textContent = "Ocultar Análise";
+
+    // // Cálculo dos valores totais
+    // const valoresTotais = {};
+    // itens.forEach((elemento) => {
+    //     if (valoresTotais[elemento.nome]) {
+    //         valoresTotais[elemento.nome] += parseFloat(elemento.valor);
+    //     } else {
+    //         valoresTotais[elemento.nome] = parseFloat(elemento.valor);
+    //     }
+    // });
+
+    // const categorias = Object.keys(valoresTotais);
+    // const valores = Object.values(valoresTotais);
+
+    // // Criação e atualização do gráfico
+    // const ctx = document.getElementById("graficoBarras").getContext("2d");
+    // const grafico = new Chart(ctx, {
+    //     type: "bar",
+    //     data: {
+    //         labels: categorias,
+    //         datasets: [
+    //             {
+    //                 label: "Consumo",
+    //                 data: valores,
+    //                 backgroundColor: "rgba(54, 162, 235, 0.5)", // Cor de fundo das barras
+    //                 borderColor: "rgba(54, 162, 235, 1)", // Cor da borda das barras
+    //                 borderWidth: 1
+    //             }
+    //         ]
+    //     },
+    //     options: {
+    //         scales: {
+    //             y: {
+    //                 beginAtZero: true
+    //             }
+    //         }
+    //     }
+    // });
+
+
+
     //Rolagem de forma suave
     analiseSection.scrollIntoView({ behavior: "smooth" });
 
     calcularTotalGasto();
     analisarConsumo();
+  }
 }
+
 
 function calcularTotalGasto() {
     const totalGastoElement = document.getElementById("totalGasto");

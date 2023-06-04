@@ -11,13 +11,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
  
 <body>
     <main class="conteudo">
         <header>
             <div class="principal">
-                <img src= "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z2xhc3MlMjBvZiUyMHdhdGVyfGVufDB8fDB8fHww&w=1000&q=80" alt="logo"  class="image">
+                <img src= "https://static6.depositphotos.com/1008709/667/i/950/depositphotos_6678851-stock-photo-water-world.jpg" alt="logo"  class="image">
                 <form action="" class="adicionar" id="novoItem">
                     <label for="text">Nome da conta</label>
                     <input type="text" name="nome" id="nome">
@@ -28,25 +30,27 @@
                 </form>
             </div>
             <button class="bAnalise" id="btnAnalise">Análise de Consumo</button>
-            
+            <ul class="analiseSection" id="analiseSection" style="display: none;">
+                <h2>Análise de consumo</h2>
+                    <div 
+                        id="totalGasto">
+                    </div>
+                    <div 
+                        id="analiseConsumo">
+                    </div>
+                    <!-- <div id="graficoConsumo">
+                        <canvas id="graficoBarras"></canvas>
+                    </div> -->
+                    
+            </ul>
+
             <div>
                 <ul class="lista" id="lista"></ul>
             </div>
         </header>
-        <ul class="analiseSection" id="analiseSection" style="display: none;">
-            <h2>Análise de consumo</h2>
-                <div 
-                    id="totalGasto">
-                </div>
-                <div 
-                    id="analiseConsumo">
-                </div>
-        </ul>
-        
-
         
     </main>
-
+    
     <script src="js/main.js"></script>
 </body>
 
