@@ -57,6 +57,10 @@ form.addEventListener("submit", (evento) => {
 
             nome.value = "";
             valor.value = "";
+
+            calcularTotalGasto();
+            analisarConsumo();
+            gerarGrafico();
         }
     } else {
         // Campos nome e valor não estão preenchidos, exiba uma mensagem de erro.
@@ -90,6 +94,9 @@ function criaElemento(item) {
     }
 
     lista.appendChild(novoItem);
+    // calcularTotalGasto(); // Atualiza o valor total
+    // analisarConsumo(); // Atualiza a análise de consumo
+    // gerarGrafico();
 }
 
 
@@ -119,6 +126,7 @@ function deletaElemento(tag, id) {
 
     calcularTotalGasto(); // Atualiza o valor total
     analisarConsumo(); // Atualiza a análise de consumo
+    gerarGrafico();
 }
 
 //Filtro
@@ -155,54 +163,90 @@ function toggleAnaliseConsumo() {
     analiseSection.style.display = "block";
     btnAnalise.textContent = "Ocultar Análise";
 
-    // // Cálculo dos valores totais
-    // const valoresTotais = {};
-    // itens.forEach((elemento) => {
-    //     if (valoresTotais[elemento.nome]) {
-    //         valoresTotais[elemento.nome] += parseFloat(elemento.valor);
-    //     } else {
-    //         valoresTotais[elemento.nome] = parseFloat(elemento.valor);
-    //     }
-    // });
-
-    // const categorias = Object.keys(valoresTotais);
-    // const valores = Object.values(valoresTotais);
-
-    // // Criação e atualização do gráfico
-    // const ctx = document.getElementById("graficoBarras").getContext("2d");
-    // const grafico = new Chart(ctx, {
-    //     type: "bar",
-    //     data: {
-    //         labels: categorias,
-    //         datasets: [
-    //             {
-    //                 label: "Consumo",
-    //                 data: valores,
-    //                 backgroundColor: "rgba(54, 162, 235, 0.5)", // Cor de fundo das barras
-    //                 borderColor: "rgba(54, 162, 235, 1)", // Cor da borda das barras
-    //                 borderWidth: 1
-    //             }
-    //         ]
-    //     },
-    //     options: {
-    //         scales: {
-    //             y: {
-    //                 beginAtZero: true
-    //             }
-    //         }
-    //     }
-    // });
-
-
-
     //Rolagem de forma suave
     analiseSection.scrollIntoView({ behavior: "smooth" });
 
     calcularTotalGasto();
     analisarConsumo();
+    gerarGrafico();
   }
 }
 
+// function gerarGrafico(){
+//     // Cálculo dos valores totais
+//     const valoresTotais = {};
+//     itens.forEach((elemento) => {
+//         if (valoresTotais[elemento.nome]) {
+//             valoresTotais[elemento.nome] += parseFloat(elemento.valor);
+//         } else {
+//             valoresTotais[elemento.nome] = parseFloat(elemento.valor);
+//         }
+//     });
+//     const categorias = Object.keys(valoresTotais);
+//     const valores = Object.values(valoresTotais);
+//     // Criação e atualização do gráfico
+//     const ctx = document.getElementById("graficoBarras").getContext("2d");
+//     const grafico = new Chart(ctx, {
+//         type: "bar",
+//         data: {
+//             labels: categorias,
+//             datasets: [
+//                 {
+//                     label: "Consumo",
+//                     data: valores,
+//                     backgroundColor: "rgba(54, 162, 235, 0.5)", // Cor de fundo das barras
+//                     borderColor: "rgba(54, 162, 235, 1)", // Cor da borda das barras
+//                     borderWidth: 1
+//                 }
+//             ]
+//         },
+//         options: {
+//             scales: {
+//                 y: {
+//                     beginAtZero: true
+//                 }
+//             }
+//         }
+//     });
+// }
+
+function gerarGrafico() {
+    const ctx = document.getElementById('grafico').getContext('2d');
+    
+    const valores = itens.map(item => parseFloat(item.valor));
+    const nomes = itens.map(item => item.nome);
+    
+    const data = {
+        labels: nomes,
+        datasets: [{
+            label: 'Consumo',
+            data: valores,
+            backgroundColor: 'rgba(0, 123, 255, 0.5)',
+            borderColor: 'rgba(0, 123, 255, 1)',
+            borderWidth: 1
+        }]
+    };
+    
+    const config = {
+        type: 'bar',
+        data: data,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'R$ ' + value;
+                        }
+                    }
+                }
+            }
+        }
+    };
+    
+    new Chart(ctx, config);
+}
 
 function calcularTotalGasto() {
     const totalGastoElement = document.getElementById("totalGasto");
