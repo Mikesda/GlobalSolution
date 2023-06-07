@@ -99,10 +99,6 @@ function criaElemento(item) {
   }
 
   lista.appendChild(novoItem);
-  // calcularTotalGasto(); // Atualiza o valor total
-  // analisarConsumo(); // Atualiza a análise de consumo
-  // calcularMedia(); // Atualiza a media
-  // gerarGrafico();
 }
 
 function atualizaElemento(item) {
@@ -185,44 +181,6 @@ function toggleAnaliseConsumo() {
     calcularMedia();
   }
 }
-
-// function gerarGrafico(){
-//     // Cálculo dos valores totais
-//     const valoresTotais = {};
-//     itens.forEach((elemento) => {
-//         if (valoresTotais[elemento.nome]) {
-//             valoresTotais[elemento.nome] += parseFloat(elemento.valor);
-//         } else {
-//             valoresTotais[elemento.nome] = parseFloat(elemento.valor);
-//         }
-//     });
-//     const categorias = Object.keys(valoresTotais);
-//     const valores = Object.values(valoresTotais);
-//     // Criação e atualização do gráfico
-//     const ctx = document.getElementById("graficoBarras").getContext("2d");
-//     const grafico = new Chart(ctx, {
-//         type: "bar",
-//         data: {
-//             labels: categorias,
-//             datasets: [
-//                 {
-//                     label: "Consumo",
-//                     data: valores,
-//                     backgroundColor: "rgba(54, 162, 235, 0.5)", // Cor de fundo das barras
-//                     borderColor: "rgba(54, 162, 235, 1)", // Cor da borda das barras
-//                     borderWidth: 1
-//                 }
-//             ]
-//         },
-//         options: {
-//             scales: {
-//                 y: {
-//                     beginAtZero: true
-//                 }
-//             }
-//         }
-//     });
-// }
 
 function gerarGrafico() {
   const ctx = document.getElementById("grafico").getContext("2d");
